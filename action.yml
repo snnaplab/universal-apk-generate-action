@@ -1,0 +1,53 @@
+name: 'Universal APK Generate Action'
+description: 'Generate Universal APK file from Android App Bundle file.'
+inputs:
+  aab-path:
+    description: ''
+    required: true
+  keystore-base64:
+    description: ''
+    required: true
+  keystore-password:
+    description: ''
+    required: true
+  key-alias:
+    description: ''
+    required: true
+  key-password:
+    description: ''
+    required: true
+outputs:
+  apk-path:
+    description: ''
+    value: ${{ steps.generate.outputs.apk-path }}
+runs:
+  using: 'composite'
+  steps:
+    #- run: echo '${{ toJson(github) }}'
+    #  shell: bash
+    - name: Generate Universal APK file
+      id: generate
+      shell: bash
+      env:
+        AAB_PATH: ${{ inputs.aab-path }}
+        KEYSTORE_BASE64: ${{ inputs.keystore-base64 }}
+        KEYSTORE_PASSWORD: ${{ inputs.keystore-password }}
+        KEY_ALIAS: ${{ inputs.key-alias }}
+        KEY_PASSWORD: ${{ inputs.key-password }}
+      run: |
+        aab_file=${AAB_PATH##*/}
+        aab_name=${aab_file%.*}
+
+        mkdir $HOME/work/universal-apk-generate-action
+        work_dir=$HOME/work/universal-apk-generate-action
+
+        curl -f -L -o $work_dir/bundletool.jar https://github.com/google/bundletool/releases/download/1.4.0/bundletool-all-1.4.0.jar
+
+        echo $KEYSTORE_BASE64 | base64 -d > $work_dir/keystore.jks
+        java -jar "$work_dir/bundletool.jar" build-apks --bundle=$AAB_PATH --output=$work_dir/app.apks --ks=$work_dir/keystore.jks --ks-pass=pass:$KEYSTORE_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=pass:$KEY_PASSWORD --mode=universal
+
+        unzip $work_dir/app.apks -d $work_dir
+
+        mv $work_dir/universal.apk $work_dir/${aab_name}-universal.apk
+
+        echo "::set-output name=apk-path::$work_dir/${aab_name}-universal.apk"
