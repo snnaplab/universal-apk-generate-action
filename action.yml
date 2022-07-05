@@ -50,6 +50,6 @@ runs:
         java -jar $work_dir/bundletool.jar build-apks --bundle="$AAB_PATH" --output=$work_dir/app.apks --ks=$work_dir/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" --ks-key-alias="$KEY_ALIAS" --key-pass=pass:"$KEY_PASSWORD" --mode=universal
 
         unzip $work_dir/app.apks -d $work_dir
-        mv $work_dir/universal.apk $work_dir/${aab_name}-universal.apk
+        mv $work_dir/universal.apk "$work_dir/${aab_name}-universal.apk"
 
         echo "::set-output name=apk-path::$work_dir/${aab_name}-universal.apk"
