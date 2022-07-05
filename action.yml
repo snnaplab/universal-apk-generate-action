@@ -45,6 +45,7 @@ runs:
 
         curl -f -s -L -o $work_dir/bundletool.jar https://github.com/google/bundletool/releases/download/1.11.0/bundletool-all-1.11.0.jar
 
+        # Input items may contain spaces, so enclose them in double quotes.
         echo "$KEYSTORE_BASE64" | base64 -d > $work_dir/keystore.jks
         java -jar $work_dir/bundletool.jar build-apks --bundle="$AAB_PATH" --output=$work_dir/app.apks --ks=$work_dir/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" --ks-key-alias="$KEY_ALIAS" --key-pass=pass:"$KEY_PASSWORD" --mode=universal
 
