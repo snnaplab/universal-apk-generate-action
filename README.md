@@ -57,4 +57,4 @@ $ cat release.keystore | base64
 
 ## License
 
-MIT
+[MIT](LICENSE)
