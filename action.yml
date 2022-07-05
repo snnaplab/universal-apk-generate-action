@@ -1,5 +1,9 @@
 name: 'Universal APK Generate Action'
 description: 'Generate Universal APK file from Android App Bundle file.'
+author: 'Hiroyuki Kusu'
+branding:
+  icon: 'smartphone'
+  color: 'yellow'
 inputs:
   aab-path:
     description: ''
