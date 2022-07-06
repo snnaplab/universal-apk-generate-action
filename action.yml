@@ -1,5 +1,5 @@
 name: 'Universal APK Generate Action'
-description: 'Generate Universal APK file from Android App Bundle file.'
+description: 'This is a GitHub Actions that creates a universal APK file from an AAB(Android App Bundle) file.'
 author: 'Hiroyuki Kusu'
 branding:
   icon: 'smartphone'
@@ -37,19 +37,20 @@ runs:
         KEY_ALIAS: ${{ inputs.key-alias }}
         KEY_PASSWORD: ${{ inputs.key-password }}
       run: |
+        # Input items may contain spaces, so enclose them in double quotes when using them on the command line.
+
         aab_file=${AAB_PATH##*/}
         aab_name=${aab_file%.*}
 
         work_dir=$HOME/work/snnaplab-universal-apk-generate-action
-        mkdir $work_dir
+        mkdir "$work_dir"
 
-        curl -f -s -L -o $work_dir/bundletool.jar https://github.com/google/bundletool/releases/download/1.11.0/bundletool-all-1.11.0.jar
+        curl -f -s -L -o "$work_dir/bundletool.jar" https://github.com/google/bundletool/releases/download/1.11.0/bundletool-all-1.11.0.jar
 
-        # Input items may contain spaces, so enclose them in double quotes.
-        echo "$KEYSTORE_BASE64" | base64 -d > $work_dir/keystore.jks
-        java -jar $work_dir/bundletool.jar build-apks --bundle="$AAB_PATH" --output=$work_dir/app.apks --ks=$work_dir/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" --ks-key-alias="$KEY_ALIAS" --key-pass=pass:"$KEY_PASSWORD" --mode=universal
+        echo "$KEYSTORE_BASE64" | base64 -d > "$work_dir/keystore.jks"
+        java -jar "$work_dir/bundletool.jar" build-apks --bundle="$AAB_PATH" --output=$work_dir/app.apks --ks=$work_dir/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" --ks-key-alias="$KEY_ALIAS" --key-pass=pass:"$KEY_PASSWORD" --mode=universal
 
-        unzip $work_dir/app.apks -d $work_dir
-        mv $work_dir/universal.apk "$work_dir/${aab_name}-universal.apk"
+        unzip "$work_dir/app.apks" -d "$work_dir"
+        mv "$work_dir/universal.apk" "$work_dir/${aab_name}-universal.apk"
 
         echo "::set-output name=apk-path::$work_dir/${aab_name}-universal.apk"
