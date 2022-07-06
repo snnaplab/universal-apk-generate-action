@@ -1,0 +1,48 @@
+name: CI
+
+on: push
+
+jobs:
+  ci:
+    name: Use this action for check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Check out Android project
+        uses: actions/checkout@v3
+        with:
+          repository: 'hkusu/ArchitectureSampleApp'
+          path: android
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 11
+          cache: 'gradle'
+      - name: Build with Gradle
+        working-directory: ./android
+        run: ./gradlew bundleRelease
+      - name: Get AAB file path
+        id: aab-path
+        working-directory: ./android
+        run: echo "::set-output name=path::$(find */build/outputs/bundle -name '*.aab' -type f | head -1)"
+      - name: Generate Universal APK file
+        id: apk-generate
+        uses: ./action/
+        with:
+          aab-path: android/${{ steps.aab-path.outputs.path }}
+          keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
+          keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
+          key-alias: ${{ secrets.KEY_ALIAS }}
+          key-password: ${{ secrets.KEY_PASSWORD }}
+      - name: Show result
+        run: |
+          echo '${{ steps.apk-generate.outputs.apk-path }}'
+          ls '${{ steps.apk-generate.outputs.apk-path }}'
+      - name: Upload APK file to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ steps.apk-generate.outputs.apk-path }}
