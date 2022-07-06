@@ -1,6 +1,6 @@
 # Universal APK Generate Action
 
-This is a GitHub Actions that creates a universal APK file from an AAB(Android App Bundle) file.
+This is a GitHub Action that creates a universal APK file from an AAB(Android App Bundle) file.
 APK file is useful for testing on real devices.
 
 ## Inputs
@@ -34,7 +34,7 @@ Path to the generated APK file.
 
 ## Usage
 
-Generate APK file and upload to Artifacts:
+Minimal usage to generate an APK file from an existing AAB file:
 
 ```yaml
 - uses: snnaplab/universal-apk-generate-action@v1
@@ -45,12 +45,10 @@ Generate APK file and upload to Artifacts:
     keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
     key-alias: ${{ secrets.KEY_ALIAS }}
     key-password: ${{ secrets.KEY_PASSWORD }}
-- uses: actions/upload-artifact@v3
-  with:
-    path: ${{ steps.apk-generate.outputs.apk-path }}
+- run: ls '${{ steps.apk-generate.outputs.apk-path }}'
 ```
 
-## Example
+## Workflow example
 
 Build when release tag is pushed and upload AAB file and APK file to Artifacts:
 
