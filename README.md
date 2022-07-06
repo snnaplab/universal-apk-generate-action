@@ -1,5 +1,7 @@
 # Universal APK Generate Action
 
+[![CI](https://github.com/snnaplab/universal-apk-generate-action/actions/workflows/ci.yml/badge.svg)](https://github.com/snnaplab/universal-apk-generate-action/actions/workflows/ci.yml)
+
 This is a GitHub Action that creates a universal APK file from an AAB(Android App Bundle) file.
 APK file is useful for testing on real devices.
 
