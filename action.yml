@@ -53,4 +53,4 @@ runs:
         unzip "$work_dir/app.apks" -d "$work_dir"
         mv "$work_dir/universal.apk" "$work_dir/${aab_name}-universal.apk"
 
-        echo "::set-output name=apk-path::$work_dir/${aab_name}-universal.apk"
+        echo "apk-path=$work_dir/${aab_name}-universal.apk" >> $GITHUB_OUTPUT
