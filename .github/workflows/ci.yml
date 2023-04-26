@@ -28,7 +28,7 @@ jobs:
       - name: Get AAB file path
         id: aab-path
         working-directory: ./android
-        run: echo "::set-output name=path::$(find */build/outputs/bundle -name '*.aab' -type f | head -1)"
+        run: echo "path=$(find */build/outputs/bundle -name '*.aab' -type f | head -1)" >> $GITHUB_OUTPUT
       - name: Generate Universal APK file
         id: apk-generate
         uses: ./action/
