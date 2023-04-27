@@ -70,7 +70,7 @@ jobs:
       - name: Check out Android project
         uses: actions/checkout@v3
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 11
@@ -78,7 +78,7 @@ jobs:
         run: ./gradlew bundleRelease
       - name: Get AAB file path
         id: aab-path
-        run: echo "::set-output name=path::$(find */build/outputs/bundle -name '*.aab' -type f | head -1)"
+        run: echo "path=$(find . -regex '^.*/build/outputs/bundle/.*\.aab$' -type f | head -1)" >> $GITHUB_OUTPUT
       - name: Upload AAB file to Artifacts
         uses: actions/upload-artifact@v3
         with:
